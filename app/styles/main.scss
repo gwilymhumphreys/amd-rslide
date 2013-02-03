@@ -1,0 +1,47 @@
+
+@mixin transition {
+  -webkit-transition: 0.5s ease;
+  -moz-transition: 0.5s ease;
+  -o-transition: 0.5s ease;
+  -ms-transition: 0.5s ease;
+  transition: 0.5s ease;
+}
+
+.rslide {
+  width: 100%;
+  position: relative;
+  padding: 0 20px;
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  .inner {
+    overflow: hidden;
+  }
+  ul {
+    @include transition;
+    width: 99999px;
+    margin: 0 auto;
+    position: relative;
+    li {
+      list-style: none;
+      float: left;
+      img {
+        width: 100%;
+      }
+    }
+  }
+  .prev, .next {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background: #f0f0f0;
+    top: 0;
+    z-index: 1000;
+  }
+  .prev {
+    left: 0;
+  }
+  .next {
+    right: 0;
+  }
+}
