@@ -8,40 +8,42 @@
 <body>
   <div id="mocha"></div>
   <script src="lib/mocha/mocha.js"></script>
-  <script>mocha.setup('bdd')</script>
+  <script>
+    mocha.setup({
+      ui: 'bdd',
+      ignoreLeaks: true,
+      globals: ['$', 'jQuery', 'LiveReload']
+    });
+  </script>
 
   <!-- assertion framework -->
-  
   <script src="lib/chai.js"></script>
-    
-      
   <script>expect = chai.expect</script>
-      
-    
-  
 
-  <!-- -->
+  <script src="scripts/vendor/jquery.min.js"></script>
+  <script src="scripts/vendor/jquery.mobile-events.js"></script>
+  <script src="scripts/vendor/jquery.transit.min.js"></script>
 
-  <!-- include source files here... -->
-
-  <!-- include spec files here... -->
-  <script>
-  // replace this by your own specs
-  (function() {
-    describe('Give it some context', function() {
-      describe('maybe a bit more context here', function() {
-
-        it('should run here few assertions', function() {
-
-        });
-
-      });
-    });
-  })();
-  </script>
+  <script data-main="spec/main" src="scripts/vendor/require.js"></script>
 
   <!-- trigger the mocha runner -->
   <script src="runner/mocha.js"></script>
+
+
+  <style>
+    .whee {
+      width: 400px;
+    }
+  </style>
+
+  <ul class="whee">
+    <li>
+      <img src="images/sample/0iGZj.jpg">
+    </li>
+    <li>
+      <img src="images/sample/1RpF9.jpg">
+    </li>
+  </ul>
 
 </body>
 </html>

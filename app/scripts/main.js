@@ -11,7 +11,10 @@ require.config({
   }
 });
  
-require(['app/app'], function(app) {
+require(['app/rslide'], function(rslide) {
 
-    $('.rslide').rslide();
+    $(document).ready(function() {
+        $('.whee').rslide();
+    });
+
 });
