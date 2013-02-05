@@ -5,9 +5,10 @@ define(['jqueryTransit'],
         return (function($) {
 
             // Filler
-            var Filler = function(ele, container, items, options) {
+            var Filler = function(outer, inner, container, items, options) {
 
-                this.$element = ele;
+                this.$outer = outer;
+                this.$inner = inner;
                 this.$container = container;
                 this.$items = items;
                 this.options = options;
@@ -23,16 +24,6 @@ define(['jqueryTransit'],
 
             // Filler prototype methods
             Filler.prototype = {
-
-                itemCss: function(item, start, width, count) {
-                    var offset = (start + count*width) + 'px',
-                        $item = $(item).css({
-                            width: width + 'px',
-                            position: 'absolute',
-                            left: offset
-                        });
-                    return $item;
-                },
 
                 // Fill in a number of objects to either side of the current ones
                 fillPre: function(count, remove) {
@@ -71,7 +62,7 @@ define(['jqueryTransit'],
                 },
                 removePost: function(count) {
                     var $items = this.$container.children();
-                    $items.slice(-count, -1).remove();
+                    $items.slice(-count).remove();
                     this.adjustPostIndex(-count);
                     return this;
                 },
@@ -90,65 +81,52 @@ define(['jqueryTransit'],
                 fitItems: function() {
                     var self = this;
 
-                    this.calcWidths();
+                    this.containerWidth = this.options.container.width || this.$inner.width();
+                    this.calcWidths(this.containerWidth);
 
-                    this.itemCount = this.calcItemCount(this.containerWidth);
+                    this.itemCount = this.calcItemCount(this.containerWidth, this.maxWidth);
                     this.itemWidth = this.calcItemWidth(this.containerWidth, this.itemCount);
 
                     this.$items = this.$container.children();
                     this.$items.each(function(i, item) {
                         $(item).css({
                             width: self.itemWidth + 'px',
-                            position: 'absolute',
                             left: i*self.itemWidth + 'px'
                         });
                     });
 
-                    this.$container.height(this.getMaxItemHeight());
+                    this.$container.height(this.getMax(this.$items, 'height'));
 
                     return this;
                 },
 
-                calcWidths: function() {
-                    this.containerWidth = this.options.container.width || this.$element.find('> .inner').width();
-
+                // Set container, min and max widths
+                calcWidths: function(containerWidth) {
                     // Calc min max widths before fitting items
-                    this.options.items.maxWidth = this.calcMaxItemWidth(this.containerWidth);
-//                    console.log(this.options.items.maxWidth);
-
+                    this.maxWidth = this.parseWidth(this.options.items.maxWidth, containerWidth) ||
+                        this.getMax(this.$items, 'width');
                     if (typeof this.options.items.minWidth === 'undefined') {
-                        this.options.items.minWidth = this.options.items.maxWidth / 2;
+                        this.options.items.minWidth = this.maxWidth / 2;
                     }
-
                 },
 
-                calcItemCount: function(containerWidth) {
-                    return Math.ceil(containerWidth / this.options.items.maxWidth);
+                calcItemCount: function(containerWidth, itemWidth) {
+                    return Math.ceil(containerWidth / itemWidth);
                 },
 
                 calcItemWidth: function(containerWidth, count) {
                     return containerWidth / count;
                 },
 
-                // todo: check css for these props?
-                calcMaxItemWidth: function(containerWidth) {
-
-                    var maxWidth = this.parseWidth(this.options.items.maxWidth, containerWidth);
-
-                    if (!maxWidth) {
-                        var min = Infinity;
-                        maxWidth = 0;
-                        this.$items.each(function(i, item) {
-                            var width = $(item).width();
-                            if (width < min) {
-                                min = width;
-                            }
-                            if (width > maxWidth) {
-                                maxWidth = width;
-                            }
-                        });
-                    }
-                    return maxWidth;
+                getMax: function(items, fn) {
+                    var max = -Infinity;
+                    items.each(function(i, item) {
+                        var m = fn ? $(item)[fn]() : item;
+                        if (m > max) {
+                            max = m;
+                        }
+                    });
+                    return max;
                 },
 
                 parseWidth: function(width, containerWidth) {
@@ -172,20 +150,14 @@ define(['jqueryTransit'],
                     return width;
                 },
 
-                // todo: consolidate
-                getMaxItemHeight: function() {
-                    var min = Infinity,
-                        max = 0;
-                    this.$items.each(function(i, item) {
-                        var width = $(item).height();
-                        if (width < min) {
-                            min = width;
-                        }
-                        if (width > max) {
-                            max = width;
-                        }
-                    });
-                    return max;
+                itemCss: function(item, start, width, count) {
+                    var offset = (start + count*width) + 'px',
+                        $item = $(item).css({
+                            width: width + 'px',
+                            position: 'absolute',
+                            left: offset
+                        });
+                    return $item;
                 },
 
                 // Get a number of items from source array / jQuery object

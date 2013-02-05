@@ -4,33 +4,27 @@ define(['app/filler', 'jqueryMobileEvents'],
 
         return (function($) {
 
-            // RSlide class
+            // rslide class
             var RSlide = function(element, options) {
 
-                this.$element = $(element);
-                this.$container = this.$element.find('ul:first');
-                this.$items = this.$container.children();
-
                 this.options = options;
+
+                this.initElements(element);
+
+                this.initControls();
 
                 this.offset = 0;
                 this.offsetItems = 0;
 
-                this.filler = new Filler(this.$element, this.$container, this.$items, this.options);
-
+                this.filler = new Filler(this.$outer, this.$inner, this.$container, this.$items, this.options);
                 this.fit();
-                this.filler.fillPre(this.options.items.pre, false);
-                this.filler.fillPost(this.options.items.post, false);
-
-                this.setupControls();
+                this.filler.fillPre(this.options.items.buffer, false);
+                this.filler.fillPost(this.options.items.buffer, false);
 
                 $(window).on('orientationchange, resize', $.proxy(this.fit, this));
 
-                this.$element.on('swipeleft', $.proxy(this.next, this));
-                this.$element.on('swiperight', $.proxy(this.prev, this));
-
                 if (this.options.pause === 'hover') {
-                    this.$element
+                    this.$outer
                         .on('mouseenter', $.proxy(this.pause, this))
                         .on('mouseleave', $.proxy(this.cycle, this));
                 }
@@ -44,44 +38,39 @@ define(['app/filler', 'jqueryMobileEvents'],
             RSlide.prototype = {
 
                 fit: function() {
-//                    console.log('fitting');
                     this.filler.fitItems();
-    //                console.log('offset', this.offset)
-    //                console.log('adjust', this.offset % this.filler.itemWidth)
-    //                console.log('to', this.offset + this.offset % this.filler.itemWidth);
-    //                this.$container.css('margin-left', this.offset + this.offset % this.filler.itemWidth);
                     this.setOffsetByItems(this.offsetItems, 0);
                 },
 
-                setOffsetByItems: function(count, duration) {
-                    this.offsetItems = count;
-//                    console.log(this.offsetItems, this.filler.itemWidth);
-                    this.setOffset(this.offsetItems * this.filler.itemWidth, duration);
+                // Increase our offset by count items
+                adjustOffsetByItems: function(count, duration) {
+                    this.setOffsetByItems(this.offsetItems + count, duration);
                     return this;
                 },
 
-                adjustOffsetByItems: function(count, duration) {
-                    this.setOffsetByItems(this.offsetItems + count, duration);
+                // Set our offset to count items
+                setOffsetByItems: function(count, duration) {
+                    this.offsetItems = count;
+                    this.setOffset(this.offsetItems * this.filler.itemWidth, duration);
                     return this;
                 },
 
                 setOffset: function(px, duration) {
                     var self = this;
                     duration = typeof duration !== 'undefined' ? duration : this.options.slider.duration;
-//                    console.log(px);
                     this.sliding = true;
-                    this.$element.trigger('sliding');
+                    this.$outer.trigger('sliding');
                     this.offset = px;
                     if (!this.terribleBrowser) {
                         this.$container.transition({ x: -px }, duration, function() {
                             self.sliding = false;
-                            self.$element.trigger('slid');
+                            self.$outer.trigger('slid');
                         });
                     }
                     else {
                         this.$container.animate({ left: -px }, duration, function() {
                             self.sliding = false;
-                            self.$element.trigger('slid');
+                            self.$outer.trigger('slid');
                         });
                     }
                     return this;
@@ -104,15 +93,50 @@ define(['app/filler', 'jqueryMobileEvents'],
                     return this;
                 },
 
-                add: function() {
-                    this.filler.fillPost(5, false);
-//                    console.log(this.$container.children())
-                    return this;
+                initElements: function(ele) {
+                    this.$container = $(ele).wrap('<div class="inner"></div>').css({
+                        padding: 0,
+                        width: '99999px',
+                        margin: '0 auto',
+                        position: 'relative'
+                    });
+                    this.$inner = this.$container.parent().css({
+                        overflow: 'hidden'
+                    });
+                    this.$inner.wrap('<div class="rslide"></div>');
+                    this.$outer = this.$inner.parent().css({
+                        width: '100%',
+                        position: 'relative'
+                    });
+                    this.$items = this.$container.children().css({
+                        'list-style': 'none',
+                        position: 'absolute'
+                    });
+                    if (this.options.items.fitImages) {
+                        this.$items.find(this.options.items.imageSelector).css({
+                            width: '100%',
+                            height: 'auto'
+                        });
+                    }
                 },
 
-                setupControls: function() {
-                    this.$element.find(this.options.controls.prev).on('click', $.proxy(this.prev, this));
-                    this.$element.find(this.options.controls.next).on('click', $.proxy(this.next, this));
+                initControls: function() {
+
+                    if (this.options.controls.create) {
+                        this.$next = $('<a href="" class="next"></a>').appendTo(this.$outer);
+                        this.$prev = $('<a href="" class="prev"></a>').appendTo(this.$outer);
+                    }
+                    else {
+                        this.$next = $(this.options.controls.next);
+                        this.$prev = $(this.options.controls.prev);
+                    }
+
+                    this.$prev.on('click', $.proxy(this.prev, this));
+                    this.$next.on('click', $.proxy(this.next, this));
+
+                    this.$outer.on('swipeleft', $.proxy(this.next, this));
+                    this.$outer.on('swiperight', $.proxy(this.prev, this));
+
                     return this;
                 }
 
@@ -138,7 +162,8 @@ define(['app/filler', 'jqueryMobileEvents'],
                     min: 2,
                     max: 4,
                     buffer: 1,
-                    post: 1
+                    fitImages: true,
+                    imageSelector: 'img'
                 },
                 container: {
                     width: undefined
@@ -148,17 +173,14 @@ define(['app/filler', 'jqueryMobileEvents'],
                     duration: 300
                 },
                 controls: {
-                    next: '.next',
-                    prev: '.prev'
+                    next: '',
+                    prev: '',
+                    create: true
                 },
                 pause: 'hover'
             };
 
             $.fn.rslide.Constructor = RSlide;
-
-            function isUndefined(v) {
-                return typeof v === 'undefined';
-            }
 
             return $.fn.rslide;
 

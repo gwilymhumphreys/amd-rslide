@@ -1,47 +1,20 @@
 
-@mixin transition {
-  -webkit-transition: 0.5s ease;
-  -moz-transition: 0.5s ease;
-  -o-transition: 0.5s ease;
-  -ms-transition: 0.5s ease;
-  transition: 0.5s ease;
-}
-
 .rslide {
-  width: 100%;
-  position: relative;
-  padding: 0 20px;
-  box-sizing: border-box;
-  -moz-box-sizing: border-box;
-  -webkit-box-sizing: border-box;
-  .inner {
-    overflow: hidden;
-  }
-  ul {
-    @include transition;
-    width: 99999px;
-    margin: 0 auto;
-    position: relative;
-    li {
-      list-style: none;
-      float: left;
-      img {
-        width: 100%;
-      }
-    }
-  }
   .prev, .next {
     position: absolute;
-    width: 20px;
-    height: 20px;
-    background: #f0f0f0;
-    top: 0;
+    width: 26px;
+    height: 26px;
+    top: 50%;
+    margin-top: -13px;
     z-index: 1000;
+    opacity: 0.6;
   }
   .prev {
     left: 0;
+    background: #fff url(../images/icon/glyphicons_224_chevron-left.png) no-repeat 4px center;
   }
   .next {
     right: 0;
+    background: #fff url(../images/icon/glyphicons_223_chevron-right.png) no-repeat 7px center;
   }
 }
