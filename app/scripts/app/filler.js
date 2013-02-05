@@ -105,9 +105,8 @@ define(['jqueryTransit'],
                     // Calc min max widths before fitting items
                     this.maxWidth = this.parseWidth(this.options.items.maxWidth, containerWidth) ||
                         this.getMax(this.$items, 'width');
-                    if (typeof this.options.items.minWidth === 'undefined') {
-                        this.options.items.minWidth = this.maxWidth / 2;
-                    }
+                    this.minWidth = this.parseWidth(this.options.items.minWidth, containerWidth) ||
+                        this.maxWidth / 2;
                 },
 
                 calcItemCount: function(containerWidth, itemWidth) {

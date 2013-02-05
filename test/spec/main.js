@@ -77,9 +77,10 @@ require(['app/rslide', 'app/filler'], function(rslidePlugin, Filler) {
                 expect(filler.calcItemCount(100, 10)).to.equal(10);
                 expect(filler.calcItemWidth(100, 10)).to.equal(10);
                 expect(filler.containerWidth).to.equal(filler.$inner.width());
+                filler.options.items.maxWidth = '25%';
                 filler.calcWidths(100);
-                expect(filler.maxWidth).to.equal();
-                expect(filler.options.items.minWidth).to.equal();
+                expect(filler.maxWidth).to.equal(25);
+                expect(filler.minWidth).to.equal(12.5);
             });
 
             it('fills items correctly', function() {

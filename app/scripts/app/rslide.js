@@ -157,7 +157,7 @@ define(['app/filler', 'jqueryMobileEvents'],
 
             $.fn.rslide.defaults = {
                 items: {
-                    minWidth: 0,
+                    minWidth: undefined,
                     maxWidth: '25%',
                     min: 2,
                     max: 4,
