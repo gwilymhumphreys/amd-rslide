@@ -83,7 +83,12 @@ require(['app/rslide', 'app/filler'], function(rslidePlugin, Filler) {
                 expect(filler.minWidth).to.equal(12.5);
             });
 
-            it('fills items correctly', function() {
+            it('gets items to fill correctly', function() {
+                var list = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+
+                expect(filler.getItems(list, 0, 10).length).to.equal(10);
+                expect(filler.getItems(list, 0, 10)[0]).to.equal(0);
+                expect(filler.getItems(list, 0, 10)[9]).to.equal(9);
 
 
             });

@@ -13,11 +13,14 @@ define(['jqueryTransit'],
                 this.$items = items;
                 this.options = options;
 
+                this.containerWidth = this.options.container.width || this.$inner.width();
+                this.calcWidths(this.containerWidth);
+
                 this.preIndex = -1;
                 this.postIndex = 0;
 
-                this.options.items.pre = this.options.items.pre === 0 ? 0 : this.options.items.pre || this.itemCount;
-                this.options.items.post = this.options.items.post === 0 ? 0 : this.options.items.post || this.itemCount;
+                this.fillPre(this.options.items.buffer, false);
+                this.fillPost(this.options.items.buffer, false);
 
                 this.itemWidth = 0;
             };
@@ -79,23 +82,20 @@ define(['jqueryTransit'],
 
                 // calc item width and count and apply
                 fitItems: function() {
-                    var self = this;
+                    var self = this,
+                        currentWidth = this.$inner.width();
 
-                    this.containerWidth = this.options.container.width || this.$inner.width();
-                    this.calcWidths(this.containerWidth);
+                    this.itemCount = this.calcItemCount(currentWidth, this.maxWidth);
+                    this.itemWidth = this.calcItemWidth(currentWidth, this.itemCount);
 
-                    this.itemCount = this.calcItemCount(this.containerWidth, this.maxWidth);
-                    this.itemWidth = this.calcItemWidth(this.containerWidth, this.itemCount);
-
-                    this.$items = this.$container.children();
-                    this.$items.each(function(i, item) {
+                    this.$container.children().each(function(i, item) {
                         $(item).css({
                             width: self.itemWidth + 'px',
-                            left: i*self.itemWidth + 'px'
+                            left: (i-self.options.items.buffer)*self.itemWidth + 'px'
                         });
                     });
 
-                    this.$container.height(this.getMax(this.$items, 'height'));
+                    this.$container.height(this.getMax(this.$container.children(), 'height'));
 
                     return this;
                 },
@@ -103,12 +103,13 @@ define(['jqueryTransit'],
                 // Set container, min and max widths
                 calcWidths: function(containerWidth) {
                     // Calc min max widths before fitting items
-                    this.maxWidth = this.parseWidth(this.options.items.maxWidth, containerWidth) ||
+                    this.maxWidth = this.parseUnits(this.options.items.maxWidth, containerWidth) ||
                         this.getMax(this.$items, 'width');
-                    this.minWidth = this.parseWidth(this.options.items.minWidth, containerWidth) ||
+                    this.minWidth = this.parseUnits(this.options.items.minWidth, containerWidth) ||
                         this.maxWidth / 2;
                 },
 
+                //todo: min widths
                 calcItemCount: function(containerWidth, itemWidth) {
                     return Math.ceil(containerWidth / itemWidth);
                 },
@@ -128,13 +129,9 @@ define(['jqueryTransit'],
                     return max;
                 },
 
-                parseWidth: function(width, containerWidth) {
+                parseUnits: function(width, containerWidth) {
 
-                    if (typeof width == 'number') {
-                        return width;
-                    }
-
-                    else if (typeof width == 'string') {
+                    if (typeof width == 'string') {
                         if (width.charAt(width.length - 1) == '%') {
                             return containerWidth *  (width.slice(0, width.length - 1)/100);
                         }
@@ -146,7 +143,11 @@ define(['jqueryTransit'],
                         }
                     }
 
-                    return width;
+                    else if (typeof width == 'number') {
+                        return width;
+                    }
+
+                    return undefined;
                 },
 
                 itemCss: function(item, start, width, count) {
@@ -163,10 +164,11 @@ define(['jqueryTransit'],
                 // If `index` is negative will operate in reverse from the end of the source
                 // Repeats objects to make up `count` items
                 getItems: function(source, index, count) {
-                    source = source.clone();
                     var items, end,
                         wrapIndex = 0,
                         wrap = 0;
+
+                    source = source.clone ? source.clone() : source;
 
                     if (index < 0) {
                         end = source.length + index + 1;
@@ -182,7 +184,7 @@ define(['jqueryTransit'],
                         wrap = end - source.length;
                     }
 
-                    items = source.slice(index, end).clone();
+                    items = source.slice(index, end);
 
                     if (wrap > 0) {
                         var wrapped = this.getItems(source, wrapIndex, wrap);
@@ -191,7 +193,6 @@ define(['jqueryTransit'],
 
                     return items;
                 }
-
 
             };
 

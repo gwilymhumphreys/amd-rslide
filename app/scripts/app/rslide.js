@@ -18,10 +18,8 @@ define(['app/filler', 'jqueryMobileEvents'],
 
                 this.filler = new Filler(this.$outer, this.$inner, this.$container, this.$items, this.options);
                 this.fit();
-                this.filler.fillPre(this.options.items.buffer, false);
-                this.filler.fillPost(this.options.items.buffer, false);
 
-                $(window).on('orientationchange, resize', $.proxy(this.fit, this));
+                $(window).on('orientationchange, resize', $.proxy(this.onResize, this));
 
                 if (this.options.pause === 'hover') {
                     this.$outer
@@ -91,6 +89,11 @@ define(['app/filler', 'jqueryMobileEvents'],
                     this.adjustOffsetByItems(this.options.slider.count);
                     this.filler.fillPost(this.options.slider.count, true);
                     return this;
+                },
+
+                onResize: function(e) {
+                    this.setOffsetByItems(0, 0);
+                    this.fit();
                 },
 
                 initElements: function(ele) {
