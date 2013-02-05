@@ -107,10 +107,7 @@ define(['app/filler', 'jqueryMobileEvents'],
                         overflow: 'hidden'
                     });
                     this.$inner.wrap('<div class="rslide"></div>');
-                    this.$outer = this.$inner.parent().css({
-                        width: '100%',
-                        position: 'relative'
-                    });
+                    this.$outer = this.$inner.parent();
                     this.$items = this.$container.children().css({
                         'list-style': 'none',
                         position: 'absolute'
