@@ -7,6 +7,27 @@
 </head>
 <body>
   <div id="mocha"></div>
+
+  <!-- Test elements -->
+  <link rel="stylesheet" href="styles/main.css">
+  <style>
+    .rslide {
+      margin-top: 60px;
+    }
+    .whee {
+      width: 400px;
+    }
+  </style>
+  <ul class="whee">
+    <li>
+      <img src="images/sample/0iGZj.jpg">
+    </li>
+    <li>
+      <img src="images/sample/1RpF9.jpg">
+    </li>
+  </ul>
+
+
   <script src="lib/mocha/mocha.js"></script>
   <script>
     mocha.setup({
@@ -20,30 +41,8 @@
   <script src="lib/chai.js"></script>
   <script>expect = chai.expect</script>
 
-  <script src="scripts/vendor/jquery.min.js"></script>
-  <script src="scripts/vendor/jquery.mobile-events.js"></script>
-  <script src="scripts/vendor/jquery.transit.min.js"></script>
-
+  <!-- tests and runner -->
   <script data-main="spec/main" src="scripts/vendor/require.js"></script>
-
-  <!-- trigger the mocha runner -->
-  <script src="runner/mocha.js"></script>
-
-
-  <style>
-    .whee {
-      width: 400px;
-    }
-  </style>
-
-  <ul class="whee">
-    <li>
-      <img src="images/sample/0iGZj.jpg">
-    </li>
-    <li>
-      <img src="images/sample/1RpF9.jpg">
-    </li>
-  </ul>
 
 </body>
 </html>

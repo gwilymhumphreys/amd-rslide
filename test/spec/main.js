@@ -1,18 +1,14 @@
 require.config({
-  shim: {
-  },
-
   paths: {
-//    hm: 'vendor/hm',
-//    esprima: 'vendor/esprima',
     app: '../scripts/app',
     jquery: '../scripts/vendor/jquery.min',
     jqueryTransit: '../scripts/vendor/jquery.transit.min',
-    jqueryMobileEvents: '../scripts/vendor/jquery.mobile-events'
+    jqueryMobileEvents: '../scripts/vendor/jquery.mobile-events',
+    runner: '../runner/mocha'
   }
 });
  
-require(['app/rslide', 'app/filler'], function(rslidePlugin, Filler) {
+require(['app/rslide', 'app/filler', 'runner'], function(rslidePlugin, Filler, runner) {
 
     $(document).ready(function() {
 
@@ -22,7 +18,6 @@ require(['app/rslide', 'app/filler'], function(rslidePlugin, Filler) {
         rslide = $ele.data('rslide');
 
         describe('rslide', function() {
-
 
             it('should be available on jquery objects', function() {
 
@@ -107,7 +102,8 @@ require(['app/rslide', 'app/filler'], function(rslidePlugin, Filler) {
 
         });
 
-        mocha.run()
+        runner.run();
+
     });
 
 });

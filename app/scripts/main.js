@@ -3,8 +3,6 @@ require.config({
   },
 
   paths: {
-//    hm: 'vendor/hm',
-//    esprima: 'vendor/esprima',
     jquery: 'empty:',
     jqueryTransit: 'vendor/jquery.transit.min',
     jqueryMobileEvents: 'vendor/jquery.mobile-events'
