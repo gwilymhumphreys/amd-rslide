@@ -107,6 +107,7 @@ define(['jqueryTransit'],
                         this.getMax(this.$items, 'width');
                     this.minWidth = this.parseUnits(this.options.items.minWidth, containerWidth) ||
                         this.maxWidth / 2;
+                    return this;
                 },
 
                 //todo: min widths
@@ -161,7 +162,8 @@ define(['jqueryTransit'],
                 },
 
                 // Get a number of items from source array / jQuery object
-                // If `index` is negative will operate in reverse from the end of the source
+                // If the starting `index` is negative will operate in reverse from the end of the source
+                // Items will always be returned in the order they appear in source
                 // Repeats objects to make up `count` items
                 getItems: function(source, index, count) {
                     var items, end,
@@ -171,19 +173,10 @@ define(['jqueryTransit'],
                     source = source.clone ? source.clone() : source;
 
                     if (index < 0) {
-                        end = source.length + index + 1;
-                        index = end - count;
-                        if (index < 0) {
-                            wrap = -index;
-                            index = 0;
-                            wrapIndex = -1;
-                        }
+                        index = (source.length + index) % source.length;
                     }
-                    else {
-                        end = index + count;
-                        wrap = end - source.length;
-                    }
-
+                    end = index + count;
+                    wrap = end - source.length;
                     items = source.slice(index, end);
 
                     if (wrap > 0) {

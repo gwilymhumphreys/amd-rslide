@@ -57,11 +57,11 @@ require(['app/rslide', 'app/filler'], function(rslidePlugin, Filler) {
 
             });
 
-            it('parses width strings', function() {
-                expect(filler.parseWidth(11)).to.equal(11);
-                expect(filler.parseWidth('11px')).to.equal(11);
-                expect(filler.parseWidth('11%', 100)).to.equal(11);
-//                expect(filler.parseWidth('stupid string')).to.not.exist;
+            it('parses dimension strings', function() {
+                expect(filler.parseUnits(11)).to.equal(11);
+                expect(filler.parseUnits('11px')).to.equal(11);
+                expect(filler.parseUnits('11%', 100)).to.equal(11);
+//                expect(filler.parseUnits('stupid string')).to.not.exist;
             });
 
             it('sets item css', function() {
@@ -81,6 +81,7 @@ require(['app/rslide', 'app/filler'], function(rslidePlugin, Filler) {
                 filler.calcWidths(100);
                 expect(filler.maxWidth).to.equal(25);
                 expect(filler.minWidth).to.equal(12.5);
+
             });
 
             it('gets items to fill correctly', function() {
@@ -90,8 +91,20 @@ require(['app/rslide', 'app/filler'], function(rslidePlugin, Filler) {
                 expect(filler.getItems(list, 0, 10)[0]).to.equal(0);
                 expect(filler.getItems(list, 0, 10)[9]).to.equal(9);
 
+                expect(filler.getItems(list, 5, 20).length).to.equal(20);
+                expect(filler.getItems(list, 5, 20)[5]).to.equal(0);
+                expect(filler.getItems(list, 5, 20)[19]).to.equal(4);
+
+                expect(filler.getItems(list, -1, 10).length).to.equal(10);
+                expect(filler.getItems(list, -1, 10)[0]).to.equal(9);
+                expect(filler.getItems(list, -1, 10)[9]).to.equal(8);
+
+                expect(filler.getItems(list, -10, 10).length).to.equal(10);
+                expect(filler.getItems(list, -10, 10)[0]).to.equal(0);
+                expect(filler.getItems(list, -10, 10)[9]).to.equal(9);
 
             });
+
         });
 
         mocha.run()

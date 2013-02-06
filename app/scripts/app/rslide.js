@@ -62,13 +62,13 @@ define(['app/filler', 'jqueryMobileEvents'],
                     if (!this.terribleBrowser) {
                         this.$container.transition({ x: -px }, duration, function() {
                             self.sliding = false;
-                            self.$outer.trigger('slid');
+                            self.$container.trigger('slid');
                         });
                     }
                     else {
                         this.$container.animate({ left: -px }, duration, function() {
                             self.sliding = false;
-                            self.$outer.trigger('slid');
+                            self.$container.trigger('slid');
                         });
                     }
                     return this;
