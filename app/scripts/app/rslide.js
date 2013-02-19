@@ -1,4 +1,4 @@
-define(['app/filler', 'jquery', 'jqueryMobileEvents'],
+define(['app/filler', 'jqueryMobileEvents'],
 
     function(Filler) {
 
@@ -97,7 +97,7 @@ define(['app/filler', 'jquery', 'jqueryMobileEvents'],
                 },
 
                 initElements: function(ele) {
-                    this.$container = $(ele).wrap('<div class="inner"></div>').css({
+                    this.$container = $(ele).wrap('<div class="rslide-inner"></div>').css({
                         padding: 0,
                         width: '99999px',
                         margin: '0 auto',
@@ -107,7 +107,7 @@ define(['app/filler', 'jquery', 'jqueryMobileEvents'],
                         position: 'relative', // ie7 :|
                         overflow: 'hidden'
                     });
-                    this.$inner.wrap('<div class="rslide"></div>');
+                    this.$inner.wrap('<div class="rslide-outer"></div>');
                     this.$outer = this.$inner.parent().css({
                         position: 'relative'
                     });

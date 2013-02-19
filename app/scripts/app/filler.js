@@ -95,6 +95,7 @@ define(['jqueryTransit'],
                         });
                     });
 
+                    console.log(this.getMax(this.$container.children(), 'height'));
                     this.$container.height(this.getMax(this.$container.children(), 'height'));
 
                     return this;
