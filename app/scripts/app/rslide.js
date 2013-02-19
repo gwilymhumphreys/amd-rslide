@@ -6,7 +6,6 @@ define(['app/filler', 'jqueryMobileEvents'],
 
             // rslide class
             var RSlide = function(element, options) {
-                var loading;
 
                 this.options = options;
                 this.initElements(element);
@@ -27,21 +26,28 @@ define(['app/filler', 'jqueryMobileEvents'],
                     if (parseInt($.browser.version) < 9) this.terribleBrowser = true;
                 }
 
-                // trigger fitting when all images are loaded
-                this.$items.load(this.fit);
-
-                // Check if images are loaded already and fit immediately if so
-                var s = $('img', this.$container).each(function(i, img) {
-                    if (!img.complete) {
-                        loading = true;
-                        return false;
-                    }
-                });
-                !loading && this.fit();
+                this.startOnImagesReady();
             };
 
             // RSlide prototype methods
             RSlide.prototype = {
+
+                startOnImagesReady: function() {
+                    var loading,
+                        $images = $('img', this.$container);
+
+                    // Trigger fitting when all images are loaded
+                    $images.load($.proxy(this.fit, this));
+
+                    // Check if images are loaded already and fit immediately if so
+                    $images.each(function(i, img) {
+                        if (!img.complete) {
+                            loading = true;
+                            return false;
+                        }
+                    });
+                    !loading && this.fit();
+                },
 
                 fit: function() {
                     this.filler.fitItems();
