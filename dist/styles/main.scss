@@ -1,0 +1,20 @@
+
+.rslide-outer {
+  .prev, .next {
+    position: absolute;
+    width: 26px;
+    height: 26px;
+    top: 50%;
+    margin-top: -13px;
+    z-index: 1000;
+    opacity: 0.6;
+  }
+  .prev {
+    left: 0;
+    background: #fff url(../images/icon/glyphicons_224_chevron-left.png) no-repeat 4px center;
+  }
+  .next {
+    right: 0;
+    background: #fff url(../images/icon/glyphicons_223_chevron-right.png) no-repeat 7px center;
+  }
+}
