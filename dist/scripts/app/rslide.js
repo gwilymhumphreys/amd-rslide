@@ -6,18 +6,14 @@ define(['app/filler', 'jqueryMobileEvents'],
 
             // rslide class
             var RSlide = function(element, options) {
+                var loading;
 
                 this.options = options;
-
                 this.initElements(element);
-
                 this.initControls();
-
                 this.offset = 0;
                 this.offsetItems = 0;
-
                 this.filler = new Filler(this.$outer, this.$inner, this.$container, this.$items, this.options);
-                this.fit();
 
                 $(window).on('orientationchange, resize', $.proxy(this.onResize, this));
 
@@ -30,6 +26,18 @@ define(['app/filler', 'jqueryMobileEvents'],
                 if ($.browser.msie) {
                     if (parseInt($.browser.version) < 9) this.terribleBrowser = true;
                 }
+
+                // trigger fitting when all images are loaded
+                this.$items.load(this.fit);
+
+                // Check if images are loaded already and fit immediately if so
+                var s = $('img', this.$container).each(function(i, img) {
+                    if (!img.complete) {
+                        loading = true;
+                        return false;
+                    }
+                });
+                !loading && this.fit();
             };
 
             // RSlide prototype methods

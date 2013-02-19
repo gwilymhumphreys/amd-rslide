@@ -83,20 +83,21 @@ define(['jqueryTransit'],
                 // calc item width and count and apply
                 fitItems: function() {
                     var self = this,
-                        currentWidth = this.$inner.width();
+                        currentWidth = this.$inner.width(),
+                        maxHeight = 0;
 
                     this.itemCount = this.calcItemCount(currentWidth, this.maxWidth);
                     this.itemWidth = this.calcItemWidth(currentWidth, this.itemCount);
 
                     this.$container.children().each(function(i, item) {
-                        $(item).css({
+                        var h = $(item).css({
                             width: self.itemWidth + 'px',
                             left: (i-self.options.items.buffer)*self.itemWidth + 'px'
-                        });
+                        }).height();
+                        maxHeight = h > maxHeight ? h : maxHeight;
                     });
 
-                    this.$container.height(this.getMax(this.$container.children(), 'height'));
-
+                    this.$container.height(maxHeight);
                     return this;
                 },
 
